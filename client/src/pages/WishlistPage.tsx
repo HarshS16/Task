@@ -41,8 +41,8 @@ export function WishlistPage() {
           <div className="w-20 h-20 bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Heart className="w-10 h-10 text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Your wishlist is empty</h1>
-          <p className="text-gray-500 mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Your wishlist is empty</h1>
+          <p className="text-gray-500 mb-6 sm:mb-8 text-sm sm:text-base">
             Start adding deals you love to track price drops and get alerts!
           </p>
           <Link href="/">
@@ -60,14 +60,14 @@ export function WishlistPage() {
   const inactiveItems = wishlistItems.filter(item => item.deal.isExpired || item.deal.isDisabled);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-          <Heart className="text-red-500" fill="currentColor" />
+      <div className="mb-6 sm:mb-8 text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center sm:justify-start gap-3">
+          <Heart className="text-red-500 w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" />
           My Wishlist
         </h1>
-        <p className="text-gray-500">
+        <p className="text-gray-500 text-sm sm:text-base">
           {wishlistItems.length} item{wishlistItems.length !== 1 ? 's' : ''} saved
         </p>
       </div>

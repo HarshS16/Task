@@ -31,9 +31,9 @@ export function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Today's Best Deals</h1>
-        <p className="text-gray-500">
+      <div className="mb-6 sm:mb-8 text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Today's Best Deals</h1>
+        <p className="text-gray-500 text-sm sm:text-base">
           Discover amazing discounts on top products. Add to wishlist to track price drops!
         </p>
       </div>

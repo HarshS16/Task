@@ -50,8 +50,8 @@ export function DealDetailsPage() {
         </span>
       </Link>
 
-      <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
-        <div className="grid md:grid-cols-2 gap-8">
+      <div className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8">
           {/* Image */}
           <div className="relative aspect-square bg-gray-100">
             {deal.imageUrl ? (
@@ -94,7 +94,7 @@ export function DealDetailsPage() {
           </div>
 
           {/* Details */}
-          <div className="p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {/* Retailer */}
             <div className="flex items-center gap-2 text-blue-600 text-sm font-medium mb-2">
               <Store size={16} />
@@ -102,7 +102,7 @@ export function DealDetailsPage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{deal.title}</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">{deal.title}</h1>
 
             {/* Description */}
             {deal.description && (
@@ -110,13 +110,13 @@ export function DealDetailsPage() {
             )}
 
             {/* Pricing */}
-            <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-              <div className="flex items-baseline gap-4 mb-3">
-                <span className="text-4xl font-bold text-gray-900">
+            <div className="bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+              <div className="flex items-baseline gap-2 sm:gap-4 mb-3 flex-wrap">
+                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                   ${deal.currentPrice.toFixed(2)}
                 </span>
                 {deal.originalPrice > deal.currentPrice && (
-                  <span className="text-xl text-gray-400 line-through">
+                  <span className="text-base sm:text-xl text-gray-400 line-through">
                     ${deal.originalPrice.toFixed(2)}
                   </span>
                 )}

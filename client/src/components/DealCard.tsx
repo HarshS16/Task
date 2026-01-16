@@ -68,19 +68,19 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <div className="text-xs text-blue-600 font-medium uppercase tracking-wider mb-1">
             {deal.retailer}
           </div>
-          <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors text-sm sm:text-base">
             {deal.title}
           </h3>
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-bold text-gray-900">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-lg sm:text-xl font-bold text-gray-900">
               ${deal.currentPrice.toFixed(2)}
             </span>
             {deal.originalPrice > deal.currentPrice && (
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-xs sm:text-sm text-gray-400 line-through">
                 ${deal.originalPrice.toFixed(2)}
               </span>
             )}
