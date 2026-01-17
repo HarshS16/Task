@@ -22,6 +22,7 @@ export function useAddToWishlist() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['wishlist'] });
             queryClient.invalidateQueries({ queryKey: ['deals'] });
+            queryClient.invalidateQueries({ queryKey: ['deal'] });
         },
     });
 }
@@ -36,6 +37,7 @@ export function useRemoveFromWishlist() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['wishlist'] });
             queryClient.invalidateQueries({ queryKey: ['deals'] });
+            queryClient.invalidateQueries({ queryKey: ['deal'] });
         },
     });
 }
@@ -53,9 +55,100 @@ export function useUpdateWishlistAlert() {
     });
 }
 
-export function useToggleWishlist() {
-    const addMutation = useAddToWishlist();
-    const removeMutation = useRemoveFromWishlist();
+interface ToggleWishlistOptions {
+    onAdd?: () => void;
+    onRemove?: () => void;
+    onError?: (error: Error) => void;
+}
+
+export function useToggleWishlist(options?: ToggleWishlistOptions) {
+    const queryClient = useQueryClient();
+
+    const addMutation = useMutation({
+        mutationFn: async ({ dealId }: { dealId: string }) => {
+            return api.addToWishlist(dealId, false);
+        },
+        onMutate: async ({ dealId }) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['deal', dealId] });
+            await queryClient.cancelQueries({ queryKey: ['deals'] });
+
+            // Snapshot the previous value
+            const previousDeal = queryClient.getQueryData(['deal', dealId]);
+            const previousDeals = queryClient.getQueryData(['deals']);
+
+            // Optimistically update the deal
+            queryClient.setQueryData(['deal', dealId], (old: Deal | undefined) => {
+                if (!old) return old;
+                return { ...old, inWishlist: true };
+            });
+
+            // Optimistically update deals list (stored as Deal[] array)
+            queryClient.setQueryData(['deals'], (old: Deal[] | undefined) => {
+                if (!old) return old;
+                return old.map((deal: Deal) =>
+                    deal.id === dealId ? { ...deal, inWishlist: true } : deal
+                );
+            });
+
+            return { previousDeal, previousDeals, dealId };
+        },
+        onSuccess: () => {
+            options?.onAdd?.();
+            queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        },
+        onError: (error, _, context) => {
+            // Rollback on error
+            if (context?.dealId) {
+                queryClient.setQueryData(['deal', context.dealId], context.previousDeal);
+            }
+            queryClient.setQueryData(['deals'], context?.previousDeals);
+            options?.onError?.(error as Error);
+        },
+    });
+
+    const removeMutation = useMutation({
+        mutationFn: async (dealId: string) => {
+            return api.removeFromWishlist(dealId);
+        },
+        onMutate: async (dealId) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['deal', dealId] });
+            await queryClient.cancelQueries({ queryKey: ['deals'] });
+
+            // Snapshot the previous value
+            const previousDeal = queryClient.getQueryData(['deal', dealId]);
+            const previousDeals = queryClient.getQueryData(['deals']);
+
+            // Optimistically update the deal
+            queryClient.setQueryData(['deal', dealId], (old: Deal | undefined) => {
+                if (!old) return old;
+                return { ...old, inWishlist: false, alertEnabled: false };
+            });
+
+            // Optimistically update deals list (stored as Deal[] array)
+            queryClient.setQueryData(['deals'], (old: Deal[] | undefined) => {
+                if (!old) return old;
+                return old.map((deal: Deal) =>
+                    deal.id === dealId ? { ...deal, inWishlist: false, alertEnabled: false } : deal
+                );
+            });
+
+            return { previousDeal, previousDeals, dealId };
+        },
+        onSuccess: () => {
+            options?.onRemove?.();
+            queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        },
+        onError: (error, _, context) => {
+            // Rollback on error
+            if (context?.dealId) {
+                queryClient.setQueryData(['deal', context.dealId], context.previousDeal);
+            }
+            queryClient.setQueryData(['deals'], context?.previousDeals);
+            options?.onError?.(error as Error);
+        },
+    });
 
     return {
         toggle: (deal: Deal) => {

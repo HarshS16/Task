@@ -1,6 +1,7 @@
 import { Heart } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useToggleWishlist } from '../hooks/useWishlist';
+import { useToast } from './Toast';
 import type { Deal } from '../types';
 
 interface WishlistButtonProps {
@@ -12,7 +13,19 @@ interface WishlistButtonProps {
 
 export function WishlistButton({ deal, size = 'md', showText = false, className = '' }: WishlistButtonProps) {
   const { isAuthenticated } = useAuth();
-  const { toggle, isLoading } = useToggleWishlist();
+  const { showToast } = useToast();
+  
+  const { toggle, isLoading } = useToggleWishlist({
+    onAdd: () => {
+      showToast('Item added to wishlist', 'wishlist-add');
+    },
+    onRemove: () => {
+      showToast('Item removed from wishlist', 'wishlist-remove');
+    },
+    onError: () => {
+      showToast('Something went wrong', 'error');
+    },
+  });
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -71,3 +84,4 @@ export function WishlistButton({ deal, size = 'md', showText = false, className 
     </button>
   );
 }
+
